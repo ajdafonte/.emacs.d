@@ -1,0 +1,5 @@
+# Files and directories to exclude
+ido.last
+/server/
+/request/
+/auto-save-list/
