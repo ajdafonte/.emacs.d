@@ -23,11 +23,23 @@ There are two things you can do about this warning:
   (when (< emacs-major-version 24)
     ;; For important compatibility libraries like cl-lib
     (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
+
+;; added for flycheck
+(add-to-list 'package-archives
+             '("MELPA Stable" . "https://stable.melpa.org/packages/") t)
+
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize)
+
+;; exec-path-from-shell
+;; A GNU Emacs library to ensure environment variables inside Emacs look the same as in the user's shell.
+;; used for flycheck configuration
+;; from: https://github.com/purcell/exec-path-from-shell
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                               ;;
@@ -39,7 +51,8 @@ There are two things you can do about this warning:
 (defconst *root-config-path* "~/.emacs.d/")
 (defconst *all-configs* (list :common (list :dir "common/" :files '("f-common.el"))
 			      :win (list :dir "win/" :files '("f-win.el"))
-			      :linux (list :dir "unix" :files '("f-linux.el"))))
+			      :mac (list :dir "mac/" :files '("f-mac.el"))
+                              :linux (list :dir "unix/" :files '("f-linux.el"))))
 (defvar *my-config-path* nil)
 
 ;; helper functions
@@ -70,6 +83,7 @@ There are two things you can do about this warning:
 (defun get-os-type ()
   (cond ((eq system-type 'windows-nt) :win)
 	((eq system-type 'gnu/linux) :linux)
+        ((eq system-type 'darwin) :mac)
 	(t ;; Other-system code
 	 (error "Undefined system detected. Unable to load emacs configurations."))))
 
@@ -117,7 +131,9 @@ There are two things you can do about this warning:
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (sqlup-mode request use-package))))
+ '(package-selected-packages
+   (quote
+    (xml-format exec-path-from-shell flycheck-plantuml flycheck-yamllint indent-tools yaml-mode json-mode sqlup-mode request use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

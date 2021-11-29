@@ -24,6 +24,13 @@
 ;;
 (global-set-key (kbd "C-c r") 'revert-buffer)
 
+;; json-minify (needs to be defined only for json-mode and only for a selected region not all buffer)
+
+(global-set-key (kbd "C-c C-m") 'arebel-minify-buffer-contents)
+
+;; (add-hook 'json-mode
+;;           (lambda () (local-set-key (kbd "C-c C-m") #'arebel-minify-buffer-contents)))
+
 
 ;; Key bindings - functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -85,3 +92,13 @@ there's a region, all lines that region covers will be duplicated."
   (let ((oldpos (point)))
     (end-of-line)
     (newline-and-indent)))
+
+
+;; from: https://www.accidentalrebel.com/posts/minifying-buffer-contents-in-emacs.html
+(defun arebel-minify-buffer-contents ()
+  "Minifies the buffer contents by removing whitespaces."
+  (interactive)
+  (delete-whitespace-rectangle (point-min) (point-max))
+  (mark-whole-buffer)
+  (goto-char (point-min))
+  (while (search-forward "\n" nil t) (replace-match "" nil t)))
